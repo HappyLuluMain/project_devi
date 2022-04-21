@@ -1,5 +1,6 @@
 package com.devi.blog.springboot.domain.posts;
 
+import com.devi.blog.springboot.web.dto.PostsSaveRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,4 +31,8 @@ public class Posts {
         this.author = author;
     }
 
+    public void update(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 }
