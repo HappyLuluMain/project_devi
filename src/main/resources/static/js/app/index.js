@@ -9,6 +9,12 @@ var main = {
        $('#btn-update').on('click', function(){
            _this.update();
        });
+
+       $('#btn-delete').on('click', function(){
+           if(confirm('이 글을 삭제 하시겠습니까?')){
+               _this.delete();
+           }
+       });
     },
 
     save : function(){
@@ -37,14 +43,32 @@ var main = {
             title : $('#title').val(),
             content : $('#content').val()
         }
+        var id = $('#id').val();
+
         $.ajax({
-            url : '/api/v1/posts/' + $('#id').val(),
+            url : '/api/v1/posts/' + id,
             type : 'PUT',
             dataType : 'json',
             contentType : 'application/json; charset=utf-8',
             data : JSON.stringify(data)
         }).done(function(){
             alert('글 수정이 완료되었습니다');
+            window.location.href = '/';
+        }).fail(function(error){
+            alert(JSON.stringify(error));
+        })
+    },
+
+    delete : function(){
+        var id = $('#id').val();
+
+        $.ajax({
+            url : '/api/v1/posts/' + id,
+            type : 'DELETE',
+            dataType : 'json',
+            contentType : 'application/json; charset=utf-8'
+        }).done(function(){
+            alert('삭제가 완료되었습니다');
             window.location.href = '/';
         }).fail(function(error){
             alert(JSON.stringify(error));
