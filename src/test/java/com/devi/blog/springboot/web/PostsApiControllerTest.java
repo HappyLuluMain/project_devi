@@ -41,7 +41,7 @@ public class PostsApiControllerTest {
     }
 
     @Test
-    public void savePosts() throws Exception{
+    public void postsSave() throws Exception{
 
         //given
         String title = "test title";
@@ -68,7 +68,7 @@ public class PostsApiControllerTest {
     }
 
     @Test
-    public void updatePosts(){
+    public void postsUpdate(){
         //given
         Posts savedPots = postsRepository.save(Posts.builder()
                 .title("title")
@@ -89,7 +89,7 @@ public class PostsApiControllerTest {
         String url = "http://localhost:" + port + "/api/v1/posts/" + updateId;
 
         //when
-        ResponseEntity<Long> responseEntity= restTemplate.exchange(url,
+        ResponseEntity<Long> responseEntity = restTemplate.exchange(url,
                 HttpMethod.PUT, requestEntity, Long.class);
 
         //then
@@ -103,7 +103,7 @@ public class PostsApiControllerTest {
     }
 
     @Test
-    public void findPostsById(){
+    public void postsFindById(){
         //given
         Posts savedPots = postsRepository.save(Posts.builder()
         .title("title")
@@ -121,5 +121,29 @@ public class PostsApiControllerTest {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getTitle()).isEqualTo(savedPots.getTitle());
+    }
+
+    @Test
+    public void postsDelete(){
+        //given
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                .title("title")
+                .author("author")
+                .content("content")
+                .build();
+        Posts savedPots = postsRepository.save(requestDto.toEntity());
+
+        Long savedId = savedPots.getId();
+
+        String url = "http://localhost:" + port + "/api/v1/posts/" + savedId;
+
+        HttpEntity<Long> requestEntity = new HttpEntity<>(savedId);
+
+        //when
+        ResponseEntity<Long> responseEntity= restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Long.class);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isEqualTo(savedId);
     }
 }
